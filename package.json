@@ -1,0 +1,24 @@
+{
+  "name": "bamazon-nodejs-mysql",
+  "version": "1.0.0",
+  "description": "Create an Amazon-like storefront with the MySQL and Node.js that will take in orders from customers and deplete stock from the store's inventory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keenwilson/bamazon-Nodejs-MySQL.git"
+  },
+  "author": "Keen Wilson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/keenwilson/bamazon-Nodejs-MySQL/issues"
+  },
+  "homepage": "https://github.com/keenwilson/bamazon-Nodejs-MySQL#readme",
+  "dependencies": {
+    "ansi-colors": "^3.2.1",
+    "columnify": "^1.5.4",
+    "inquirer": "^6.2.0"
+  }
+}
