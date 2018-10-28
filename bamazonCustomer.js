@@ -46,17 +46,15 @@ function readAvailableProducts() {
 }
 
 function buyProducts(res){
-    console.log(res);
-        // Create an array of choice
+
+    // Create an array of choice
     var buyProductChoices = [];
 
     for (var i=0; i < res.length; i++) {
-        console.log(res[i].item_id);
-        buyProductChoices.push(res[i].item_id)
-        
+        buyProductChoices.push(res[i].item_id.toString())      
     }
 
-    console.log("buyProductChoices",buyProductChoices)
+    
     inquirer
     .prompt([{
         name: "buyID",
@@ -69,13 +67,22 @@ function buyProducts(res){
         message: "What quantity would you like to purchase?",
     }])
     .then(function(answer) {
-        var buyProductID = answer.buyID
-        var buyProductQuantity = answer.buyQuantity
 
-        var query = "SELECT position, song, year FROM top5000 WHERE ?";
-        connection.query(query, { item_id: answer.buyID }, function(err, res) {
-            if (err) throw err;
+        res.forEach(product => {
+            if (product.item_id == answer.buyID) {
+                var buyName = product.product_name;
+                var buyPrice = product.price
+                var buyQty = answer.buyQuantity
 
-        });
+                // Calculate subtotal cost
+                var subtotalCost = parseFloat(product.price * answer.buyQuantity).toFixed(2) ;
+
+                // Print order details to the user
+                console.log(c.green("Order Summary: ") + " \n\n " +
+                c.cyan(buyName) + "\n\n " +
+                c.cyan("Qty: " + buyQty ) + "\n\n " +
+                c.yellow("Subtotal: $" + subtotalCost));
+            }
+        });        
     });
 };
