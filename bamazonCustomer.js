@@ -103,11 +103,12 @@ function buyThisProduct(res) {
                     updateInventory();
 
                     // Print order details to the user
-                    console.log(c.green.underline("\n\nAdd to Cart!\n\n") +
-                        c.bold.cyan(buyName) + "\n " +
+                    console.log(c.italic.yellow("\nAdd to Cart\n") +
+                        c.green(buyName) + "\n " +
                         c.cyan("Item#: " + buyItemID) + "\n " +
                         c.cyan("Qty: " + buyQty) + "\n\n " +
-                        c.yellow("Subtotal: $" + subtotalCost));
+                        c.italic.yellow("                                             Subtotal: $" + subtotalCost)
+        + "\n--------------------------------------------------------------\n");
                 }
             });
             askToContinueShopping(res);
@@ -124,12 +125,9 @@ function askToContinueShopping(res) {
             choices: ["Continue shopping!", "Ready to checkout!"]
         }])
         .then(function (answer) {
-            console.log(answer);
-            console.log(answer.confirm);
 
             switch (answer.confirm) {
                 case "Continue shopping!":
-                    console.log("You want to continue shopping.")
                     readAvailableProducts();
                     break;
                 case "Ready to checkout!":
@@ -156,25 +154,33 @@ function updateInventory() {
     });
 }
 function showOrderSummary() {
-    
-    console.log(shoppingCart);
-    // Print order details to the user
-    console.log(c.green.underline("\n\nOrder Summary\n\n"));
+    // Set totalCost equal to zero so that the app will add up the subtotal cost to it
     let totalCost = 0;
+
+    // Print order summary to the user
+    console.log(c.yellow.underline("\n\nOrder Summary\n"));
+    
+    // Prit details of each order item
     shoppingCart.forEach(product => {
         console.log(
-        c.bold(product.product_name) + "\n " +
+        c.green(product.product_name) + "\n " +
         c.cyan("Item#: " + product.item_id) + "\n " +
         c.cyan("Qty: " + product.buy_quantity) + "\n\n " +
-        c.yellow("Subtotal: $" + product.subtotal_cost)
+        c.italic.yellow("                                             Subtotal: $" + product.subtotal_cost)
         + "\n--------------------------------------------------------------\n");
-        // Add subtotal cost to Total Cost
+        
+        // Add subtotal cost of each order item to Total Cost
         var a = parseFloat(totalCost);
         var b = parseFloat(product.subtotal_cost);
         totalCost = a + b;
     });
-    console.log(c.green("\n\nTotal Cost: $" + totalCost));
-        
+
+    // Print total cost to the customer
+    console.log(c.yellow("Total Cost: $" + totalCost))
+    console.log(c.yellow("Thank you for shopping with us today!"+ "\n\n "));
+    
+    // End connections
+    connection.end();
 };
 
 
