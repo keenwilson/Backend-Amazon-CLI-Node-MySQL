@@ -86,11 +86,12 @@ function buyThisProduct(res) {
                     stockQty = parseInt(product.stock_quantity) - parseInt(buyQty);
 
                     // Check if your store has enough of the product to meet the customer's request
-
                     if (parseInt(stockQty) < 0) {
                         // We don't have enough inventory if stockQty is less than 0.
                         console.log(c.red("\n\n Insufficient quantity! We only have " + product.stock_quantity + " items of " + buyName + ".\n\n"));
                     } else if (parseInt(stockQty) >= 0) {
+                        // If our store does have enough of the product, fulfill the customer's order
+
                         // Calculate subtotal cost
                         subtotalCost = parseFloat(buyPrice * buyQty).toFixed(2);
 
@@ -106,7 +107,7 @@ function buyThisProduct(res) {
                         }
                         shoppingCart.push(newShoppingCartItem);
 
-                        // Update inventory
+                        // Update inventory on the SQL database to reflect the remaining quantity.
                         updateInventory();
 
                         // Print order details to the user
@@ -162,6 +163,7 @@ function updateInventory() {
     });
 }
 function showOrderSummary() {
+    // Shows the customer the total cost of their purchase
     // Set totalCost equal to zero so that the app will add up the subtotal cost to it
     let totalCost = 0;
 
