@@ -28,7 +28,7 @@ connection.connect(function (err) {
 
 function readAvailableProducts() {
     console.log(c.yellow("Displaying all of the products available for sale...\n"));
-    var query = "SELECT item_id, product_name, price FROM products WHERE stock_quantity > 0";
+    var query = "SELECT item_id, product_name, department_name, price FROM products WHERE stock_quantity > 0";
     connection.query(query, function (err, res) {
         if (err) throw err;
         // Log all results of the SELECT statement
@@ -51,7 +51,8 @@ function buyProducts(res){
     var buyProductChoices = [];
 
     for (var i=0; i < res.length; i++) {
-        buyProductChoices.push(res[i].item_id.toString())      
+        var productChoice = res[i].item_id.toString() + " " + res[i].product_name.toString();
+        buyProductChoices.push(productChoice);      
     }
 
     
@@ -75,10 +76,10 @@ function buyProducts(res){
                 var buyQty = answer.buyQuantity
 
                 // Calculate subtotal cost
-                var subtotalCost = parseFloat(product.price * answer.buyQuantity).toFixed(2) ;
+                var subtotalCost = parseFloat(buyPrice * answer.buyQuantity).toFixed(2) ;
 
                 // Print order details to the user
-                console.log(c.green("Order Summary: ") + " \n\n " +
+                console.log(c.green(" \n\n " + "Order Details: ") + " \n\n " +
                 c.cyan(buyName) + "\n\n " +
                 c.cyan("Qty: " + buyQty ) + "\n\n " +
                 c.yellow("Subtotal: $" + subtotalCost));
