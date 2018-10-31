@@ -46,6 +46,7 @@ An Amazon-like storefront app implemented `Node.js` and  `MySQL` to take in orde
 
 ![Manager View Add New Product](./screenshots/bamazonmanager-addnewproduct.gif)    
 * If a manager selects `Add New Product`, it will allow the manager to add a completely new product to the store.
+    * The app will validate if the item ID is an 8-digit number.
 
 ---
 ## Author
