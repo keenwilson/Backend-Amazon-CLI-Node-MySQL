@@ -27,22 +27,23 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log("connected as id " + connection.threadId + "\n");
+    
     // Running this application will first display all of the items available for sale.
     readAvailableProducts();
 });
 
 function readAvailableProducts() {
-    console.log(c.cyan("Displaying all of the products available for sale...\n"));
+    console.log(c.inverse.green("\n  Welcome to Bamazon !!  \n"));
+    console.log(c.green("Displaying all of the products available for sale...\n"));
     var query = "SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity > 0";
     connection.query(query, function (err, res) {
         if (err) throw err;
         // Log all results of the SELECT statement
         // Using the columnify package, column headings are extracted from the keys in supplied objects.
         var columns = columnify(res, {
-            minWidth: 20,
+            minWidth: 14,
             config: {
-                product_name: { maxWidth: 80 }
+                product_name: { maxWidth: 70 }
             }
         })
         console.log(columns)
