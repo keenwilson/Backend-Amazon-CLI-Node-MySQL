@@ -56,11 +56,11 @@ function managerMenuOptions() {
                     readLowInventory();
                     break;
                 case "Add to Inventory":
-                    // code block
                     addToInventory();
                     break;
                 case "Add New Product":
                     // code block
+                    addNewProduct();
                     break;
                 case "Quit Bamazon Manager":
                     quitBamazonManager();
@@ -80,6 +80,7 @@ function quitBamazonManager() {
 
 function readProductsForSale() {
     console.log(c.inverse.green("\n  View Products for Sale  \n"));
+    console.log(c.green("Displayinging all productsfor sale \n"));
     var query = "SELECT item_id, product_name, department_name, price, stock_quantity FROM products";
     connection.query(query, function (err, res) {
         if (err) throw err;
@@ -99,7 +100,7 @@ function readProductsForSale() {
 
 function readLowInventory() {
     console.log(c.inverse.green("\n  View Low Inventory  \n"));
-    console.log(c.green("Showing products with inventory less than 50 \n"));
+    console.log(c.green("Displayinging products with inventory less than 50 \n"));
     // Read all products with inventory less than 50
     var query = "SELECT item_id, product_name, department_name, price, stock_quantity FROM products WHERE stock_quantity < 50";
     connection.query(query, function (err, res) {
@@ -150,7 +151,7 @@ function addToInventory() {
             }, {
                 name: "quantity",
                 type: "input",
-                message: "What quantity would you like to add?",
+                message: "What quantity would you like to add?"
             }])
             .then(function (answer) {
 
@@ -168,32 +169,31 @@ function addToInventory() {
                         updateQty = parseInt(answer.quantity);
                         stockQty = parseInt(product.stock_quantity) + parseInt(updateQty);
 
-                        // Store this product to a changedInventory variable
-                        var changedInventory = {
-                            item_id: updateItemID
-                            , product_name: updateName
-                            , department_name: updateDepartmet
-                            , price: updatePrice
-                            , original_quantity: originalQty
-                            , update_quantity: updateQty
-                            , stock_quantity: stockQty
-                        }
-                        // Add to the updatedInventory array
-                        updatedInventory.push(changedInventory);
+                        /*                       // Store this product to a changedInventory variable
+                                              var changedInventory = {
+                                                  item_id: updateItemID
+                                                  , product_name: updateName
+                                                  , department_name: updateDepartmet
+                                                  , price: updatePrice
+                                                  , original_quantity: originalQty
+                                                  , update_quantity: updateQty
+                                                  , stock_quantity: stockQty
+                                              }
+                                              // Add to the updatedInventory array
+                                              updatedInventory.push(changedInventory); */
 
                         // Update inventory on the SQL database to reflect the remaining quantity.
                         updateInventory();
 
                         // Print order details to the user
                         console.log(c.italic.yellow("\nAdd to Inventory\n") +
-                            
+
                             c.green(updateName) + "\n " +
                             c.cyan("Item#: " + updateItemID) + "\n " +
                             c.cyan("Quantity: " + c.white(originalQty) + c.yellow(" + " + updateQty)) + "\n\n " +
                             c.italic.yellow("The inventory for " + updateName + " has been updated to " + stockQty)
                             + "\n---------------------------------------------------------------------------------------------------------------------------------\n");
 
-                        
                         managerMenuOptions();
                     };
 
@@ -214,6 +214,65 @@ function updateInventory() {
     });
 }
 
+function addNewProduct() {
+    console.log(c.inverse.green("\n  Add New Product  \n"));
+    console.log(c.green("Enter product information \n"));
+
+    // Use inquirer.prompt to ask for the manager input
+    inquirer
+        .prompt([{
+            name: "name",
+            type: "input",
+            message: "What is product name?"
+        }, {
+            name: "itemid",
+            type: "input",
+            message: "What is an 8-digit item id?",
+            validate: validateItemID
+        }, {
+            name: "department",
+            type: "list",
+            message: "What department is this product in?",
+            choices: ["Sports & Outdoors", "Kitchen & Dining", "Home Decor", "Toys", "Women's Clothing", new inquirer.Separator(), "Others"]
+        }, {
+            name: "price",
+            type: "input",
+            message: "What is the retail price per item"
+        }, {
+            name: "quantity",
+            type: "input",
+            message: "What is the initial stock quantity?"
+        }]).then(function (answer) {
+
+            var sql = `INSERT INTO products (item_id, product_name, department_name, price, stock_quantity)
+            VALUES ('${answer.itemid}', "${answer.name}", "${answer.department}", '${answer.price}', '${answer.quantity}');`
+
+            connection.query(sql, function (err, res) {
+                if (err) throw err;
+                // Print order details to the user
+                console.log(c.italic.yellow("\nAdd New Product\n") +
+                    c.green(`${answer.name} (Item#: ${answer.itemid})`) + c.cyan(`has been added to the store's product list.`) +
+                    c.cyan(`\nDepartment: ${answer.department}`) +
+                    c.cyan(`\nRetail price: $${answer.price}`) +
+                    c.cyan(`\nStock Quantity: ${answer.quantity}`) +
+                    "\n---------------------------------------------------------------------------------------------------------------------------------\n"
+                );
+                managerMenuOptions();
+            });
+
+
+
+
+           
+        });
+};
+
+
+
+function validateItemID(x) {
+    var isValid = /^[0-9]{8}$/.test(x);
+    return isValid || "Item ID should be an 8-digit number";
+};
 
 
 function readProducts() {
